@@ -8,7 +8,7 @@
 
         public string LastName { get; set; }
 
-        public Sex Sex { get; set; }
+        public Gender Gender { get; set; }
 
         public int? CompanyId { get; set; }
 

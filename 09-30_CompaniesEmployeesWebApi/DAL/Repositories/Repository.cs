@@ -19,7 +19,7 @@ namespace _09_30_CompaniesEmployeesWebApi.DAL.Repositories
             _dbSet = context.Set<TEntity>();
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
+        public virtual async Task<List<TEntity>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
         }
@@ -29,7 +29,7 @@ namespace _09_30_CompaniesEmployeesWebApi.DAL.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetFilteredAsync(Expression<Func<TEntity, bool>> predicate)
+        public virtual async Task<List<TEntity>> GetFilteredAsync(Expression<Func<TEntity, bool>> predicate)
         {
             return await _dbSet.Where(predicate).ToListAsync();
         }

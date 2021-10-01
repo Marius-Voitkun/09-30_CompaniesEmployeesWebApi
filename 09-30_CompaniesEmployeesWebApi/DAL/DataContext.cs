@@ -26,7 +26,7 @@ namespace _09_30_CompaniesEmployeesWebApi.DAL
                 .HasMaxLength(50);
 
             modelBuilder.Entity<Employee>()
-                .Property(e => e.Sex)
+                .Property(e => e.Gender)
                 .HasConversion<string>();
 
             modelBuilder.Entity<Company>()

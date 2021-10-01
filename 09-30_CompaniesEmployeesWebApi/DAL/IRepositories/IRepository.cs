@@ -7,9 +7,9 @@ namespace _09_30_CompaniesEmployeesWebApi.DAL.IRepositories
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<List<TEntity>> GetAllAsync();
         Task<TEntity> GetAsync(int id);
-        Task<IEnumerable<TEntity>> GetFilteredAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<List<TEntity>> GetFilteredAsync(Expression<Func<TEntity, bool>> predicate);
         Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
 
         void Add(TEntity entity);

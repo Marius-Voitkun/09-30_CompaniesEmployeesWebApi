@@ -1,4 +1,5 @@
 using _09_30_CompaniesEmployeesWebApi.DAL;
+using _09_30_CompaniesEmployeesWebApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,11 @@ namespace _09_30_CompaniesEmployeesWebApi
             services.AddControllers();
 
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
+
+            services.AddTransient<UnitOfWork>();
+
+            services.AddTransient<CompaniesService>();
+            services.AddTransient<EmployeesService>();
 
             services.AddSwaggerGen(c =>
             {
