@@ -1,5 +1,7 @@
 ﻿using _09_30_CompaniesEmployeesWebApi.DAL;
+using _09_30_CompaniesEmployeesWebApi.Dtos;
 using _09_30_CompaniesEmployeesWebApi.Models;
+using AutoMapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,38 +9,48 @@ namespace _09_30_CompaniesEmployeesWebApi.Services
 {
     public class CompaniesService
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CompaniesService(UnitOfWork unitOfWork)
+        public CompaniesService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task<List<Company>> GetAllAsync()
+        public async Task<List<CompanyGetDto>> GetAllAsync()
         {
-            return await _unitOfWork.Companies.GetAllAsync();
+            var companies = await _unitOfWork.Companies.GetAllAsync("Employees");
+
+            return _mapper.Map<List<CompanyGetDto>>(companies);
         }
 
-        public async Task<Company> GetAsync(int id)
+        public async Task<CompanyGetDto> GetAsync(int id)
         {
-            return await _unitOfWork.Companies.GetAsync(id);
+            var company = await _unitOfWork.Companies.GetAsync(id);
+            company.Employees = await _unitOfWork.Employees.GetFilteredAsync(e => e.CompanyId == company.Id);
+
+            return _mapper.Map<CompanyGetDto>(company);
         }
 
-        public async Task AddAsync(Company company)
+        public async Task AddAsync(CompanyAddUpdateDto companyDto)
         {
-            _unitOfWork.Companies.Add(company);
+            _unitOfWork.Companies.Add(_mapper.Map<Company>(companyDto));
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task UpdateAsync(Company company)
+        public async Task UpdateAsync(int id, CompanyAddUpdateDto companyDto)
         {
+            var company = _mapper.Map<Company>(companyDto);
+            company.Id = id;
+
             _unitOfWork.Companies.Update(company);
             await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var company = await GetAsync(id);
+            var company = await _unitOfWork.Companies.GetAsync(id);
             _unitOfWork.Companies.Delete(company);
             await _unitOfWork.SaveAsync();
         }

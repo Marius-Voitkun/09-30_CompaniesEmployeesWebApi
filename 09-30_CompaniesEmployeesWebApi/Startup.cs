@@ -27,7 +27,9 @@ namespace _09_30_CompaniesEmployeesWebApi
 
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
 
-            services.AddTransient<UnitOfWork>();
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddTransient<CompaniesService>();
             services.AddTransient<EmployeesService>();

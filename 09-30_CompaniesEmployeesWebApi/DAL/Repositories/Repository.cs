@@ -19,8 +19,11 @@ namespace _09_30_CompaniesEmployeesWebApi.DAL.Repositories
             _dbSet = context.Set<TEntity>();
         }
 
-        public virtual async Task<List<TEntity>> GetAllAsync()
+        public virtual async Task<List<TEntity>> GetAllAsync(string includeProperties)
         {
+            if (!string.IsNullOrWhiteSpace(includeProperties))
+                return await IncludeProperties(_dbSet, includeProperties).ToListAsync();
+
             return await _dbSet.ToListAsync();
         }
 
@@ -34,7 +37,7 @@ namespace _09_30_CompaniesEmployeesWebApi.DAL.Repositories
             return await _dbSet.Where(predicate).ToListAsync();
         }
 
-        public virtual async Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
+        public virtual async Task<TEntity> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
         {
             return await _dbSet.SingleOrDefaultAsync(predicate);
         }
@@ -62,6 +65,16 @@ namespace _09_30_CompaniesEmployeesWebApi.DAL.Repositories
         public virtual void DeleteRange(IEnumerable<TEntity> entities)
         {
             _dbSet.RemoveRange(entities);
+        }
+
+        private IQueryable<TEntity> IncludeProperties(IQueryable<TEntity> query, string properties)
+        {
+            foreach (var property in properties.Split(',', StringSplitOptions.TrimEntries))
+            {
+                query = query.Include(property);
+            }
+
+            return query;
         }
     }
 }

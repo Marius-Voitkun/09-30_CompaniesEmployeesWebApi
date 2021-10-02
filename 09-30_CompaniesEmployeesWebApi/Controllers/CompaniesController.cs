@@ -1,4 +1,4 @@
-﻿using _09_30_CompaniesEmployeesWebApi.Models;
+﻿using _09_30_CompaniesEmployeesWebApi.Dtos;
 using _09_30_CompaniesEmployeesWebApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -18,29 +18,29 @@ namespace _09_30_CompaniesEmployeesWebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Company>>> GetAll()
+        public async Task<ActionResult<List<CompanyGetDto>>> GetAll()
         {
             return Ok(await _companiesService.GetAllAsync());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Company>> Get(int id)
+        public async Task<ActionResult<CompanyGetDto>> Get(int id)
         {
             return Ok(await _companiesService.GetAsync(id));
         }
 
         [HttpPost]
-        public async Task<ActionResult> Add(Company company)
+        public async Task<ActionResult> Add(CompanyAddUpdateDto companyDto)
         {
-            await _companiesService.AddAsync(company);
+            await _companiesService.AddAsync(companyDto);
 
-            return CreatedAtAction(nameof(Get), new { id = company.Id }, company);
+            return NoContent();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, Company company)
+        public async Task<ActionResult> Update(int id, CompanyAddUpdateDto companyDto)
         {
-            await _companiesService.UpdateAsync(company);
+            await _companiesService.UpdateAsync(id, companyDto);
 
             return NoContent();
         }
