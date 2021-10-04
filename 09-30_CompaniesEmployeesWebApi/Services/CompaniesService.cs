@@ -20,7 +20,7 @@ namespace _09_30_CompaniesEmployeesWebApi.Services
 
         public async Task<List<CompanyGetDto>> GetAllAsync()
         {
-            var companies = await _unitOfWork.Companies.GetAllAsync("Employees");
+            var companies = await _unitOfWork.Companies.GetAllAsync(nameof(Company.Employees));
 
             return _mapper.Map<List<CompanyGetDto>>(companies);
         }
@@ -28,9 +28,23 @@ namespace _09_30_CompaniesEmployeesWebApi.Services
         public async Task<CompanyGetDto> GetAsync(int id)
         {
             var company = await _unitOfWork.Companies.GetAsync(id);
-            company.Employees = await _unitOfWork.Employees.GetFilteredAsync(e => e.CompanyId == company.Id);
+            company.Employees = await _unitOfWork.Employees
+                .GetFilteredAsync(e => e.CompanyId == id, "");
 
             return _mapper.Map<CompanyGetDto>(company);
+        }
+
+        public async Task<List<EmployeeGetDto>> GetEmployeesOfCompanyAsync(int companyId)
+        {
+            var employees = await _unitOfWork.Employees
+                .GetFilteredAsync(e => e.CompanyId == companyId, nameof(Employee.Company));
+
+            return _mapper.Map<List<EmployeeGetDto>>(employees);
+        }
+
+        public async Task<int> GetEmployeeCountInCompanyAsync(int companyId)
+        {
+            return (await _unitOfWork.Employees.GetFilteredAsync(e => e.CompanyId == companyId, "")).Count;
         }
 
         public async Task AddAsync(CompanyAddUpdateDto companyDto)

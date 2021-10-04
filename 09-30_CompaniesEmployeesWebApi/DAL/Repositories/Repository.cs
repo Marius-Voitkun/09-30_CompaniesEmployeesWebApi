@@ -19,12 +19,10 @@ namespace _09_30_CompaniesEmployeesWebApi.DAL.Repositories
             _dbSet = context.Set<TEntity>();
         }
 
+        // string includeProperties - properties, separated with ','
         public virtual async Task<List<TEntity>> GetAllAsync(string includeProperties)
         {
-            if (!string.IsNullOrWhiteSpace(includeProperties))
-                return await IncludeProperties(_dbSet, includeProperties).ToListAsync();
-
-            return await _dbSet.ToListAsync();
+            return await IncludeProperties(_dbSet, includeProperties).ToListAsync();
         }
 
         public virtual async Task<TEntity> GetAsync(int id)
@@ -32,9 +30,10 @@ namespace _09_30_CompaniesEmployeesWebApi.DAL.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public virtual async Task<List<TEntity>> GetFilteredAsync(Expression<Func<TEntity, bool>> predicate)
+        // string includeProperties - properties, separated with ','
+        public virtual async Task<List<TEntity>> GetFilteredAsync(Expression<Func<TEntity, bool>> predicate, string includeProperties)
         {
-            return await _dbSet.Where(predicate).ToListAsync();
+            return await IncludeProperties(_dbSet.Where(predicate), includeProperties).ToListAsync();
         }
 
         public virtual async Task<TEntity> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
@@ -69,9 +68,12 @@ namespace _09_30_CompaniesEmployeesWebApi.DAL.Repositories
 
         private IQueryable<TEntity> IncludeProperties(IQueryable<TEntity> query, string properties)
         {
-            foreach (var property in properties.Split(',', StringSplitOptions.TrimEntries))
+            if (!string.IsNullOrWhiteSpace(properties))
             {
-                query = query.Include(property);
+                foreach (var property in properties.Split(',', StringSplitOptions.TrimEntries))
+                {
+                    query = query.Include(property);
+                }
             }
 
             return query;

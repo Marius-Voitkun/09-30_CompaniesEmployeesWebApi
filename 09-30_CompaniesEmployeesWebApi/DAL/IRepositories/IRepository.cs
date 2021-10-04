@@ -9,7 +9,7 @@ namespace _09_30_CompaniesEmployeesWebApi.DAL.IRepositories
     {
         Task<List<TEntity>> GetAllAsync(string includeProperties);
         Task<TEntity> GetAsync(int id);
-        Task<List<TEntity>> GetFilteredAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<List<TEntity>> GetFilteredAsync(Expression<Func<TEntity, bool>> predicate, string includeProperties);
         Task<TEntity> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
 
         void Add(TEntity entity);

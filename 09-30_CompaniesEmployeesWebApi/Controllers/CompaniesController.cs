@@ -29,6 +29,18 @@ namespace _09_30_CompaniesEmployeesWebApi.Controllers
             return Ok(await _companiesService.GetAsync(id));
         }
 
+        [HttpGet("{id}/Employees")]
+        public async Task<ActionResult<List<EmployeeGetDto>>> GetEmployeesOfCompany(int id)
+        {
+            return Ok(await _companiesService.GetEmployeesOfCompanyAsync(id));
+        }
+
+        [HttpGet("{id}/EmployeeCount")]
+        public async Task<ActionResult<int>> GetEmployeeCountInCompany(int id)
+        {
+            return Ok(await _companiesService.GetEmployeeCountInCompanyAsync(id));
+        }
+
         [HttpPost]
         public async Task<ActionResult> Add(CompanyAddUpdateDto companyDto)
         {

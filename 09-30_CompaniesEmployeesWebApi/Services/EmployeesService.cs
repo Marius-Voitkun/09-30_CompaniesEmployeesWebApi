@@ -20,7 +20,7 @@ namespace _09_30_CompaniesEmployeesWebApi.Services
 
         public async Task<List<EmployeeGetDto>> GetAllAsync()
         {
-            var employees = await _unitOfWork.Employees.GetAllAsync("Company");
+            var employees = await _unitOfWork.Employees.GetAllAsync(nameof(Employee.Company));
 
             return _mapper.Map<List<EmployeeGetDto>>(employees);
         }
